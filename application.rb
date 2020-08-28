@@ -116,15 +116,19 @@ class ReadmeSampleApp
   end
 
   def unprocessable_entity(message = "Couldn't process the request")
-    return [422, { "Content-Type" => "text/plain" }, [message]]
+    message_with_status message, 422
   end
 
   def not_found(message = "Route not found")
-    return [404, { "Content-Type" => "text/plain" }, [message]]
+    message_with_status message, 404
   end
 
   def bad_request(message = "Bad request")
-    return [400, { "Content-Type" => "text/plain" }, [message]]
+    message_with_status message, 400
+  end
+
+  def message_with_status(message, status)
+    [status, { "Content-Type" => "text/plain" }, [message]]
   end
 
   def cars
