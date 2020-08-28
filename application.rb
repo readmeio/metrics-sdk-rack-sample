@@ -71,7 +71,7 @@ class ReadmeSampleApp
 
   def show_car(id)
     return bad_request("Missing car id in request") if id.nil?
-    found_car = cars.find { |car| car[:id].to_s == id }
+    found_car = find_car_by_id(id)
 
     if found_car.nil?
       not_found("Car with id #{id} not found")
@@ -99,8 +99,14 @@ class ReadmeSampleApp
 
   def destroy_car(id)
     return bad_request("Missing car id in request") if id.nil?
-    cars.reject! { |car| car[:id].to_s == id }
-    success_response("Car with id #{id} deleted", "text/plain")
+    found_car = find_car_by_id(id)
+
+    if found_car.nil?
+      not_found("Car with id #{id} not found")
+    else
+      cars.reject! { |car| car[:id].to_s == id }
+      success_response("Car with id #{id} deleted", "text/plain")
+    end
   end
 
   def success_response(body, content_type)
@@ -131,6 +137,10 @@ class ReadmeSampleApp
 
   def message_with_status(message, status)
     [status, {"Content-Type" => "text/plain"}, [message]]
+  end
+
+  def find_car_by_id(id)
+    cars.find { |car| car[:id].to_s == id }
   end
 
   def cars
