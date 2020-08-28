@@ -25,8 +25,8 @@ class ReadmeSampleApp
     end
   rescue JSON::ParserError => error
     unprocessable_entity(error.message)
-  rescue
-    bad_request
+  rescue => error
+    server_error(error.message)
   end
 
   private
@@ -51,7 +51,7 @@ class ReadmeSampleApp
   end
 
   def request_method_to_action(method)
-    case request.request_method
+    case method
     when "GET"
       :index
     when "DELETE"
@@ -123,6 +123,10 @@ class ReadmeSampleApp
 
   def bad_request(message = "Bad request")
     message_with_status message, 400
+  end
+
+  def server_error(message = "Server could not process the request")
+    message_with_status message, 500
   end
 
   def message_with_status(message, status)
