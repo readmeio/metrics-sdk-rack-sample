@@ -20,6 +20,8 @@ class ReadmeSampleApp
     in path: "cars", action: :create
       body = request.body.read
       create_car(JSON.parse(body))
+    in path: "users", action: :show
+      show_current_user(request)
     else
       not_found
     end
@@ -107,6 +109,20 @@ class ReadmeSampleApp
       cars.reject! { |car| car[:id].to_s == id }
       success_response("Car with id #{id} deleted", "text/plain")
     end
+  end
+
+  def show_current_user(request)
+    user = current_user(request)
+
+    if user.nil?
+      message_with_status "No user signed in", 401
+    else
+      success_response(user.to_json, "application/json")
+    end
+  end
+
+  def current_user(request)
+    request.get_header("CURRENT_USER")
   end
 
   def success_response(body, content_type)

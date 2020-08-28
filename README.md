@@ -32,6 +32,38 @@ By default this will run at `localhost:9292`
 
 ## Endpoints
 
+There is a hard-coded authentication scheme set up in this application. To
+"authorize" your requests add an authorization header:
+
+`Authorization=token;`
+
+Depending on whether or not you've "authorized", the logs sent to API will
+contain different user information, as configured in `config.ru`:
+
+```ruby
+current_user = env["CURRENT_USER"]
+
+if current_user.nil?
+  {id: "guest", label: "Guest User", email: "guest@example.com"}
+else
+  {id: current_user.id, label: current_user.name, email: current_user.email}
+end
+```
+
+### Current User
+
+`GET http://localhost:9292/users/me`
+
+#### Response
+
+```JSON
+{
+  "id": 1,
+  "name": "Test Testerson",
+  "email": "testerson@example.com"
+}
+```
+
 ### Cars list
 
 `GET http://localhost:9292/cars`
