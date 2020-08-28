@@ -1,5 +1,5 @@
-require 'rack'
-require 'json'
+require "rack"
+require "json"
 
 class ReadmeSampleApp
   def call(env)
@@ -23,7 +23,6 @@ class ReadmeSampleApp
     else
       not_found
     end
-
   rescue JSON::ParserError => error
     unprocessable_entity(error.message)
   rescue
@@ -35,11 +34,10 @@ class ReadmeSampleApp
   def get_route_info(request)
     fragments = request.path.split("/").reject(&:empty?)
     id, action = find_id_and_action(fragments[1], request)
-    {action: action, path: fragments[0] || "/" , id: id}
+    {action: action, path: fragments[0] || "/", id: id}
   end
 
   def find_id_and_action(fragment, request)
-
     case fragment
     when "new"
       [nil, :new]
@@ -91,11 +89,11 @@ class ReadmeSampleApp
       year: params["year"]
     }
 
-    unless new_car.values.any?(&:nil?)
+    if new_car.values.any?(&:nil?)
+      unprocessable_entity("You must provide all values to add a new car")
+    else
       cars.push(new_car)
       success_response(new_car.to_json, "application/json")
-    else
-      unprocessable_entity("You must provide all values to add a new car")
     end
   end
 
@@ -128,19 +126,17 @@ class ReadmeSampleApp
   end
 
   def message_with_status(message, status)
-    [status, { "Content-Type" => "text/plain" }, [message]]
+    [status, {"Content-Type" => "text/plain"}, [message]]
   end
 
   def cars
     @cars ||= [
-      { id: 1, make: "Volkswagen", model: "Golf", year: 2021 },
-      { id: 2, make: "Volkswagen", model: "GTI", year: 2021 },
-      { id: 3, make: "Volkswagen", model: "Golf R", year: 2020 },
-      { id: 4, make: "Audi", model: "RS3", year: 2020 },
-      { id: 5, make: "Audi", model: "TT", year: 2020 },
-      { id: 6, make: "Audi", model: "R8", year: 2020 },
+      {id: 1, make: "Volkswagen", model: "Golf", year: 2021},
+      {id: 2, make: "Volkswagen", model: "GTI", year: 2021},
+      {id: 3, make: "Volkswagen", model: "Golf R", year: 2020},
+      {id: 4, make: "Audi", model: "RS3", year: 2020},
+      {id: 5, make: "Audi", model: "TT", year: 2020},
+      {id: 6, make: "Audi", model: "R8", year: 2020}
     ]
   end
 end
-
-

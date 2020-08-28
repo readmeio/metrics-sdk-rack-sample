@@ -14,4 +14,3 @@ use Readme::Metrics, readme_options do |env|
 end
 
 run ReadmeSampleApp.new
-
